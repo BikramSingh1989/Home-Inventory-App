@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const API_URL = https://home-inventory-app.onrender.com; 
+const API_URL = "https://home-inventory-app.onrender.com"; 
 
 function App() {
   const [items, setItems] = useState([]);
