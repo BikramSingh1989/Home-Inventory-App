@@ -13,18 +13,45 @@ function App() {
     localStorage.getItem("darkMode") === "true"
   );
 
-  // Fetch items from backend
+  // ✅ Prevent infinite redirect on login page
   useEffect(() => {
-    axios.get(`${API_URL}/items`)
-      .then(response => setItems(response.data))
-      .catch(error => console.error("Error fetching items:", error));
+    const token = localStorage.getItem("token");
+    const currentPath = window.location.pathname;
+
+    if (!token && currentPath !== "/login") {
+      window.location.href = "/login";
+    }
   }, []);
 
-  // Add a new item
+  // ✅ Fetch inventory items (Only if logged in)
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      axios.get(`${API_URL}/items`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      .then(response => setItems(response.data))
+      .catch(error => console.error("Error fetching items:", error));
+    }
+  }, []);
+
+  // ✅ Add a new item
   const addItem = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("You must be logged in to add an item.");
+      return;
+    }
+
     try {
-      const response = await axios.post(`${API_URL}/items`, { name, location, quantity: Number(quantity) });
+      const response = await axios.post(`${API_URL}/items`, 
+        { name, location, quantity: Number(quantity) },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
       setItems([...items, response.data]);
       setName(""); setLocation(""); setQuantity(1);
     } catch (error) {
@@ -32,7 +59,7 @@ function App() {
     }
   };
 
-  // Edit item
+  // ✅ Edit item
   const startEditing = (item) => {
     setEditingItem(item);
     setName(item.name);
@@ -40,12 +67,23 @@ function App() {
     setQuantity(item.quantity);
   };
 
+  // ✅ Update item
   const updateItem = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("You must be logged in to update an item.");
+      return;
+    }
+
     try {
-      const response = await axios.put(`${API_URL}/items/${editingItem._id}`, {
-        name, location, quantity: Number(quantity)
-      });
+      const response = await axios.put(
+        `${API_URL}/items/${editingItem._id}`,
+        { name, location, quantity: Number(quantity) },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
       setItems(items.map(item => (item._id === editingItem._id ? response.data : item)));
       setEditingItem(null);
       setName(""); setLocation(""); setQuantity(1);
@@ -54,11 +92,21 @@ function App() {
     }
   };
 
-  // Delete item
+  // ✅ Delete item
   const deleteItem = async (id) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("You must be logged in to delete an item.");
+      return;
+    }
+
     if (window.confirm("Are you sure you want to delete this item?")) {
       try {
-        await axios.delete(`${API_URL}/items/${id}`);
+        await axios.delete(`${API_URL}/items/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
         setItems(items.filter(item => item._id !== id)); // Remove from UI
       } catch (error) {
         alert("Error deleting item!");
@@ -66,7 +114,7 @@ function App() {
     }
   };
 
-  // Toggle Dark Mode and Save Preference
+  // ✅ Toggle Dark Mode
   const toggleDarkMode = () => {
     const newMode = !isDarkMode;
     setIsDarkMode(newMode);
@@ -123,13 +171,13 @@ function App() {
         </div>
       </main>
 
-      {/*  Footer Stays at Bottom */}
+      {/* ✅ Footer Stays at Bottom */}
       <Footer />
     </div>
   );
 }
 
-//  Footer Component
+// ✅ Footer Component
 const Footer = () => {
   return (
     <footer style={footerStyle}>
@@ -138,7 +186,7 @@ const Footer = () => {
   );
 };
 
-//  Styling
+// ✅ Fixed Missing Styles
 const appContainerStyle = (darkMode) => ({
   display: "flex",
   flexDirection: "column",
@@ -159,12 +207,13 @@ const footerStyle = {
   width: "100%",
 };
 
-const tableContainerStyle = { width: "100%", display: "flex", justifyContent: "center", overflowX: "auto" };
-const tableStyle = { width: "100%", maxWidth: "600px", borderCollapse: "collapse", textAlign: "center" };
-const tableHeaderStyle = (darkMode) => ({ padding: "8px", border: "1px solid black", textAlign: "center", fontWeight: "bold", backgroundColor: darkMode ? "#555" : "#ddd", color: darkMode ? "#fff" : "#000", whiteSpace: "nowrap" });
-const tableCellStyle = { padding: "8px", border: "1px solid black", textAlign: "center", fontWeight: "bold", wordBreak: "break-word" };
-const actionCellStyle = { padding: "5px", border: "1px solid black", textAlign: "center", whiteSpace: "nowrap", display: "flex", justifyContent: "center", gap: "5px" };
+// ✅ Fixed Styles
 const buttonStyle = { padding: "10px", backgroundColor: "#222", color: "#fff", border: "none", cursor: "pointer", borderRadius: "5px", fontSize: "1em", margin: "5px 0" };
 const formStyle = { display: "flex", flexDirection: "column", maxWidth: "400px", margin: "10px auto" };
+const tableContainerStyle = { width: "100%", display: "flex", justifyContent: "center", overflowX: "auto" };
+const tableStyle = { width: "100%", borderCollapse: "collapse", textAlign: "center" };
+const tableHeaderStyle = (darkMode) => ({ padding: "8px", border: "1px solid black", backgroundColor: darkMode ? "#555" : "#ddd", color: darkMode ? "#fff" : "#000" });
+const tableCellStyle = { padding: "8px", border: "1px solid black", textAlign: "center" };
+const actionCellStyle = { padding: "8px", border: "1px solid black", textAlign: "center" };
 
 export default App;
