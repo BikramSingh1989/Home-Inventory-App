@@ -211,5 +211,9 @@ const footerStyle = {
 const buttonStyle = { padding: "10px", backgroundColor: "#222", color: "#fff", border: "none", cursor: "pointer", borderRadius: "5px", fontSize: "1em", margin: "5px 0" };
 const formStyle = { display: "flex", flexDirection: "column", maxWidth: "400px", margin: "10px auto" };
 const tableContainerStyle = { width: "100%", display: "flex", justifyContent: "center", overflowX: "auto" };
+const tableStyle = { width: "100%", borderCollapse: "collapse", textAlign: "center" };
+const tableHeaderStyle = (darkMode) => ({ padding: "8px", border: "1px solid black", backgroundColor: darkMode ? "#555" : "#ddd", color: darkMode ? "#fff" : "#000" });
+const tableCellStyle = { padding: "8px", border: "1px solid black", textAlign: "center" };
+const actionCellStyle = { padding: "8px", border: "1px solid black", textAlign: "center" };
 
 export default App;
