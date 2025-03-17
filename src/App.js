@@ -75,7 +75,6 @@ function App() {
 
   return (
     <>
-      <style>{mobileStyles}</style> {/*  Injecting responsive styles */}
       <div style={{
         padding: "20px",
         fontFamily: "Arial, sans-serif",
@@ -124,88 +123,15 @@ function App() {
             </tbody>
           </table>
         </div>
+
+        {/*  Footer added inside the return statement */}
+        <Footer />
       </div>
     </>
   );
 }
 
-// Mobile & Tablet Styles
-const mobileStyles = `
-  @media (max-width: 768px) {
-    table {
-      font-size: 14px;
-    }
-    th, td {
-      padding: 6px;
-    }
-    button {
-      font-size: 12px;
-      padding: 4px 6px;
-    }
-  }
-`;
-
-const tableContainerStyle = {
-  width: "100%",
-  display: "flex",
-  justifyContent: "center",
-  overflowX: "auto", 
-};
-
-const tableStyle = {
-  width: "100%",
-  maxWidth: "600px", 
-  borderCollapse: "collapse",
-  textAlign: "center",
-};
-
-const tableHeaderStyle = (darkMode) => ({
-  padding: "8px",
-  border: "1px solid black",
-  textAlign: "center",
-  fontWeight: "bold",
-  backgroundColor: darkMode ? "#555" : "#ddd",
-  color: darkMode ? "#fff" : "#000",
-  whiteSpace: "nowrap", 
-});
-
-const tableCellStyle = {
-  padding: "8px",
-  border: "1px solid black",
-  textAlign: "center",
-  fontWeight: "bold",
-  wordBreak: "break-word", 
-};
-
-const actionCellStyle = {
-  padding: "5px",
-  border: "1px solid black",
-  textAlign: "center",
-  whiteSpace: "nowrap", 
-  display: "flex",
-  justifyContent: "center",
-  gap: "5px",
-};
-
-const buttonStyle = {
-  padding: "10px",
-  backgroundColor: "#222",
-  color: "#fff",
-  border: "none",
-  cursor: "pointer",
-  borderRadius: "5px",
-  fontSize: "1em",
-  margin: "5px 0"
-};
-
-const formStyle = {
-  display: "flex",
-  flexDirection: "column",
-  maxWidth: "400px",
-  margin: "10px auto"
-};
-
-// Footer Component
+//  Footer Component (Declared Before Export)
 const Footer = () => {
   return (
     <footer style={footerStyle}>
@@ -214,15 +140,7 @@ const Footer = () => {
   );
 };
 
-return (
-  <>
-    {/* ... Your existing content */}
-    
-    {/* Footer Section */}
-    <Footer />
-  </>
-);
-
+// Footer Styling
 const footerStyle = {
   textAlign: "center",
   padding: "10px",
@@ -234,5 +152,14 @@ const footerStyle = {
   bottom: "0",
   width: "100%",
 };
+
+// Other Styles
+const tableContainerStyle = { width: "100%", display: "flex", justifyContent: "center", overflowX: "auto" };
+const tableStyle = { width: "100%", maxWidth: "600px", borderCollapse: "collapse", textAlign: "center" };
+const tableHeaderStyle = (darkMode) => ({ padding: "8px", border: "1px solid black", textAlign: "center", fontWeight: "bold", backgroundColor: darkMode ? "#555" : "#ddd", color: darkMode ? "#fff" : "#000", whiteSpace: "nowrap" });
+const tableCellStyle = { padding: "8px", border: "1px solid black", textAlign: "center", fontWeight: "bold", wordBreak: "break-word" };
+const actionCellStyle = { padding: "5px", border: "1px solid black", textAlign: "center", whiteSpace: "nowrap", display: "flex", justifyContent: "center", gap: "5px" };
+const buttonStyle = { padding: "10px", backgroundColor: "#222", color: "#fff", border: "none", cursor: "pointer", borderRadius: "5px", fontSize: "1em", margin: "5px 0" };
+const formStyle = { display: "flex", flexDirection: "column", maxWidth: "400px", margin: "10px auto" };
 
 export default App;
