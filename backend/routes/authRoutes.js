@@ -26,7 +26,7 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// Login Route
+// Login Route (Ensure this is present)
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
