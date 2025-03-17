@@ -207,4 +207,9 @@ const footerStyle = {
   width: "100%",
 };
 
+// ✅ Fixed Styles
+const buttonStyle = { padding: "10px", backgroundColor: "#222", color: "#fff", border: "none", cursor: "pointer", borderRadius: "5px", fontSize: "1em", margin: "5px 0" };
+const formStyle = { display: "flex", flexDirection: "column", maxWidth: "400px", margin: "10px auto" };
+const tableContainerStyle = { width: "100%", display: "flex", justifyContent: "center", overflowX: "auto" };
+
 export default App;
