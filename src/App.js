@@ -13,18 +13,39 @@ function App() {
     localStorage.getItem("darkMode") === "true"
   );
 
-  // Fetch items from backend
+  // ✅ Ensure user is logged in before fetching items
   useEffect(() => {
-    axios.get(`${API_URL}/items`)
-      .then(response => setItems(response.data))
-      .catch(error => console.error("Error fetching items:", error));
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("You must log in to access your inventory.");
+      window.location.href = "/login"; // Redirect to login page
+      return;
+    }
+
+    axios.get(`${API_URL}/items`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(response => setItems(response.data))
+    .catch(error => console.error("Error fetching items:", error));
   }, []);
 
-  // Add a new item
+  // ✅ Add a new item
   const addItem = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("You must be logged in to add an item.");
+      return;
+    }
+
     try {
-      const response = await axios.post(`${API_URL}/items`, { name, location, quantity: Number(quantity) });
+      const response = await axios.post(`${API_URL}/items`, 
+        { name, location, quantity: Number(quantity) },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
       setItems([...items, response.data]);
       setName(""); setLocation(""); setQuantity(1);
     } catch (error) {
@@ -32,7 +53,7 @@ function App() {
     }
   };
 
-  // Edit item
+  // ✅ Edit item
   const startEditing = (item) => {
     setEditingItem(item);
     setName(item.name);
@@ -40,12 +61,23 @@ function App() {
     setQuantity(item.quantity);
   };
 
+  // ✅ Update item
   const updateItem = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("You must be logged in to update an item.");
+      return;
+    }
+
     try {
-      const response = await axios.put(`${API_URL}/items/${editingItem._id}`, {
-        name, location, quantity: Number(quantity)
-      });
+      const response = await axios.put(
+        `${API_URL}/items/${editingItem._id}`,
+        { name, location, quantity: Number(quantity) },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
       setItems(items.map(item => (item._id === editingItem._id ? response.data : item)));
       setEditingItem(null);
       setName(""); setLocation(""); setQuantity(1);
@@ -54,11 +86,21 @@ function App() {
     }
   };
 
-  // Delete item
+  // ✅ Delete item
   const deleteItem = async (id) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("You must be logged in to delete an item.");
+      return;
+    }
+
     if (window.confirm("Are you sure you want to delete this item?")) {
       try {
-        await axios.delete(`${API_URL}/items/${id}`);
+        await axios.delete(`${API_URL}/items/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
         setItems(items.filter(item => item._id !== id)); // Remove from UI
       } catch (error) {
         alert("Error deleting item!");
@@ -66,7 +108,7 @@ function App() {
     }
   };
 
-  // Toggle Dark Mode and Save Preference
+  // ✅ Toggle Dark Mode
   const toggleDarkMode = () => {
     const newMode = !isDarkMode;
     setIsDarkMode(newMode);
@@ -123,13 +165,13 @@ function App() {
         </div>
       </main>
 
-      {/*  Footer Stays at Bottom */}
+      {/* ✅ Footer Stays at Bottom */}
       <Footer />
     </div>
   );
 }
 
-//  Footer Component
+// ✅ Footer Component
 const Footer = () => {
   return (
     <footer style={footerStyle}>
@@ -138,7 +180,7 @@ const Footer = () => {
   );
 };
 
-//  Styling
+// ✅ Styling
 const appContainerStyle = (darkMode) => ({
   display: "flex",
   flexDirection: "column",
