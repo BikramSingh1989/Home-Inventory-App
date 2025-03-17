@@ -74,59 +74,119 @@ function App() {
   };
 
   return (
-    <div style={{
-      padding: "20px",
-      fontFamily: "Arial, sans-serif",
-      backgroundColor: isDarkMode ? "#333" : "#f5f5f5",
-      color: isDarkMode ? "#fff" : "#000",
-      minHeight: "100vh"
-    }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap" }}>
-        <h2 style={{ fontSize: "1.5em" }}>📦 Home Inventory</h2>
-        <button onClick={toggleDarkMode} style={buttonStyle}>
-          {isDarkMode ? "🌞 Light Mode" : "🌙 Dark Mode"}
-        </button>
-      </div>
+    <>
+      <style>{mobileStyles}</style> {/*  Injecting responsive styles */}
+      <div style={{
+        padding: "20px",
+        fontFamily: "Arial, sans-serif",
+        backgroundColor: isDarkMode ? "#333" : "#f5f5f5",
+        color: isDarkMode ? "#fff" : "#000",
+        minHeight: "100vh"
+      }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap" }}>
+          <h2 style={{ fontSize: "1.5em" }}>📦 Home Inventory</h2>
+          <button onClick={toggleDarkMode} style={buttonStyle}>
+            {isDarkMode ? "🌞 Light Mode" : "🌙 Dark Mode"}
+          </button>
+        </div>
 
-      <form onSubmit={editingItem ? updateItem : addItem} style={formStyle}>
-        <input type="text" placeholder="Item Name" value={name} onChange={(e) => setName(e.target.value)} required />
-        <input type="text" placeholder="Location" value={location} onChange={(e) => setLocation(e.target.value)} required />
-        <input type="number" placeholder="Quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} min="1" required />
-        <button type="submit">{editingItem ? "✅ Update Item" : "➕ Add Item"}</button>
-        {editingItem && <button onClick={() => setEditingItem(null)}>❌ Cancel</button>}
-      </form>
+        <form onSubmit={editingItem ? updateItem : addItem} style={formStyle}>
+          <input type="text" placeholder="Item Name" value={name} onChange={(e) => setName(e.target.value)} required />
+          <input type="text" placeholder="Location" value={location} onChange={(e) => setLocation(e.target.value)} required />
+          <input type="number" placeholder="Quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} min="1" required />
+          <button type="submit">{editingItem ? "✅ Update Item" : "➕ Add Item"}</button>
+          {editingItem && <button onClick={() => setEditingItem(null)}>❌ Cancel</button>}
+        </form>
 
-      <h3>📋 Inventory List</h3>
-      <div style={{ overflowX: "auto" }}>
-        <table style={tableStyle}>
-          <thead>
-            <tr>
-              <th style={tableHeaderStyle(isDarkMode)}>📦 Item Name</th>
-              <th style={tableHeaderStyle(isDarkMode)}>📍 Location</th>
-              <th style={tableHeaderStyle(isDarkMode)}>🔢 Quantity</th>
-              <th style={tableHeaderStyle(isDarkMode)}>⚙️ Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map(item => (
-              <tr key={item._id}>
-                <td style={tableCellStyle}>{item.name}</td>
-                <td style={tableCellStyle}>{item.location}</td>
-                <td style={tableCellStyle}>{item.quantity}</td>
-                <td style={actionCellStyle}>
-                  <button onClick={() => startEditing(item)}>✏️ Edit</button>
-                  <button onClick={() => deleteItem(item._id)} style={{ marginLeft: "5px" }}>🗑 Delete</button>
-                </td>
+        <h3>📋 Inventory List</h3>
+        <div style={tableContainerStyle}>
+          <table style={tableStyle}>
+            <thead>
+              <tr>
+                <th style={tableHeaderStyle(isDarkMode)}>📦 Item</th>
+                <th style={tableHeaderStyle(isDarkMode)}>📍 Location</th>
+                <th style={tableHeaderStyle(isDarkMode)}>🔢 Qty</th>
+                <th style={tableHeaderStyle(isDarkMode)}>⚙️ Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {items.map(item => (
+                <tr key={item._id}>
+                  <td style={tableCellStyle}>{item.name}</td>
+                  <td style={tableCellStyle}>{item.location}</td>
+                  <td style={tableCellStyle}>{item.quantity}</td>
+                  <td style={actionCellStyle}>
+                    <button onClick={() => startEditing(item)}>✏️ Edit</button>
+                    <button onClick={() => deleteItem(item._id)}>🗑 Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
-// Styles for Responsive Design
+// Mobile & Tablet Styles
+const mobileStyles = `
+  @media (max-width: 768px) {
+    table {
+      font-size: 14px;
+    }
+    th, td {
+      padding: 6px;
+    }
+    button {
+      font-size: 12px;
+      padding: 4px 6px;
+    }
+  }
+`;
+
+const tableContainerStyle = {
+  width: "100%",
+  display: "flex",
+  justifyContent: "center",
+  overflowX: "auto", 
+};
+
+const tableStyle = {
+  width: "100%",
+  maxWidth: "600px", 
+  borderCollapse: "collapse",
+  textAlign: "center",
+};
+
+const tableHeaderStyle = (darkMode) => ({
+  padding: "8px",
+  border: "1px solid black",
+  textAlign: "center",
+  fontWeight: "bold",
+  backgroundColor: darkMode ? "#555" : "#ddd",
+  color: darkMode ? "#fff" : "#000",
+  whiteSpace: "nowrap", 
+});
+
+const tableCellStyle = {
+  padding: "8px",
+  border: "1px solid black",
+  textAlign: "center",
+  fontWeight: "bold",
+  wordBreak: "break-word", 
+};
+
+const actionCellStyle = {
+  padding: "5px",
+  border: "1px solid black",
+  textAlign: "center",
+  whiteSpace: "nowrap", 
+  display: "flex",
+  justifyContent: "center",
+  gap: "5px",
+};
+
 const buttonStyle = {
   padding: "10px",
   backgroundColor: "#222",
@@ -145,33 +205,34 @@ const formStyle = {
   margin: "10px auto"
 };
 
-const tableStyle = {
+// Footer Component
+const Footer = () => {
+  return (
+    <footer style={footerStyle}>
+      App created by <strong>Bikram Singh</strong> © {new Date().getFullYear()}
+    </footer>
+  );
+};
+
+return (
+  <>
+    {/* ... Your existing content */}
+    
+    {/* Footer Section */}
+    <Footer />
+  </>
+);
+
+const footerStyle = {
+  textAlign: "center",
+  padding: "10px",
+  fontSize: "14px",
+  marginTop: "20px",
+  color: "#666",
+  backgroundColor: "#f1f1f1",
+  position: "relative",
+  bottom: "0",
   width: "100%",
-  borderCollapse: "collapse",
-  textAlign: "center",
-  minWidth: "600px"
-};
-
-const tableHeaderStyle = (darkMode) => ({
-  padding: "10px",
-  border: "1px solid black",
-  textAlign: "center",
-  fontWeight: "bold",
-  backgroundColor: darkMode ? "#555" : "#ddd",
-  color: darkMode ? "#fff" : "#000"
-});
-
-const tableCellStyle = {
-  padding: "10px",
-  border: "1px solid black",
-  textAlign: "center",
-  fontWeight: "bold"
-};
-
-const actionCellStyle = {
-  padding: "10px",
-  border: "1px solid black",
-  textAlign: "center"
 };
 
 export default App;
