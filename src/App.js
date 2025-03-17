@@ -13,21 +13,28 @@ function App() {
     localStorage.getItem("darkMode") === "true"
   );
 
-  // ✅ Ensure user is logged in before fetching items
+  // ✅ Fix: Prevent infinite redirect loop on login page
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const currentPath = window.location.pathname;
+
+    // ✅ Only redirect if user is NOT on /login
+    if (!token && currentPath !== "/login") {
+      window.location.href = "/login";
+    }
+  }, []);
+
+  // ✅ Fetch items from backend (Only if logged in)
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    if (!token) {
-      alert("You must log in to access your inventory.");
-      window.location.href = "/login"; // Redirect to login page
-      return;
+    if (token) {
+      axios.get(`${API_URL}/items`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      .then(response => setItems(response.data))
+      .catch(error => console.error("Error fetching items:", error));
     }
-
-    axios.get(`${API_URL}/items`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-    .then(response => setItems(response.data))
-    .catch(error => console.error("Error fetching items:", error));
   }, []);
 
   // ✅ Add a new item
@@ -200,13 +207,5 @@ const footerStyle = {
   bottom: "0",
   width: "100%",
 };
-
-const tableContainerStyle = { width: "100%", display: "flex", justifyContent: "center", overflowX: "auto" };
-const tableStyle = { width: "100%", maxWidth: "600px", borderCollapse: "collapse", textAlign: "center" };
-const tableHeaderStyle = (darkMode) => ({ padding: "8px", border: "1px solid black", textAlign: "center", fontWeight: "bold", backgroundColor: darkMode ? "#555" : "#ddd", color: darkMode ? "#fff" : "#000", whiteSpace: "nowrap" });
-const tableCellStyle = { padding: "8px", border: "1px solid black", textAlign: "center", fontWeight: "bold", wordBreak: "break-word" };
-const actionCellStyle = { padding: "5px", border: "1px solid black", textAlign: "center", whiteSpace: "nowrap", display: "flex", justifyContent: "center", gap: "5px" };
-const buttonStyle = { padding: "10px", backgroundColor: "#222", color: "#fff", border: "none", cursor: "pointer", borderRadius: "5px", fontSize: "1em", margin: "5px 0" };
-const formStyle = { display: "flex", flexDirection: "column", maxWidth: "400px", margin: "10px auto" };
 
 export default App;
