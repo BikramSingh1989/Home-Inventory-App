@@ -13,7 +13,7 @@ function App() {
     localStorage.getItem("darkMode") === "true"
   );
 
-  // ✅ Prevent infinite redirect on login page
+  // ✅ Prevent infinite redirect loop on login page
   useEffect(() => {
     const token = localStorage.getItem("token");
     const currentPath = window.location.pathname;
@@ -23,7 +23,7 @@ function App() {
     }
   }, []);
 
-  // ✅ Fetch items only if user is authenticated
+  // ✅ Fetch inventory items (Only if logged in)
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -186,13 +186,25 @@ const Footer = () => {
   );
 };
 
-// ✅ Styles (Fixed Missing Styles)
-const buttonStyle = { padding: "10px", backgroundColor: "#222", color: "#fff", border: "none", cursor: "pointer", borderRadius: "5px", fontSize: "1em", margin: "5px 0" };
-const formStyle = { display: "flex", flexDirection: "column", maxWidth: "400px", margin: "10px auto" };
-const tableContainerStyle = { width: "100%", display: "flex", justifyContent: "center", overflowX: "auto" };
-const tableStyle = { width: "100%", maxWidth: "600px", borderCollapse: "collapse", textAlign: "center" };
-const tableHeaderStyle = (darkMode) => ({ padding: "8px", border: "1px solid black", textAlign: "center", fontWeight: "bold", backgroundColor: darkMode ? "#555" : "#ddd", color: darkMode ? "#fff" : "#000" });
-const tableCellStyle = { padding: "8px", border: "1px solid black", textAlign: "center", fontWeight: "bold" };
-const actionCellStyle = { padding: "5px", border: "1px solid black", textAlign: "center", display: "flex", justifyContent: "center", gap: "5px" };
+// ✅ Fixed Missing Styles
+const appContainerStyle = (darkMode) => ({
+  display: "flex",
+  flexDirection: "column",
+  minHeight: "100vh",
+  fontFamily: "Arial, sans-serif",
+  backgroundColor: darkMode ? "#333" : "#f5f5f5",
+  color: darkMode ? "#fff" : "#000",
+});
+
+const footerStyle = {
+  textAlign: "center",
+  padding: "10px",
+  fontSize: "14px",
+  color: "#666",
+  backgroundColor: "#f1f1f1",
+  position: "relative",
+  bottom: "0",
+  width: "100%",
+};
 
 export default App;
