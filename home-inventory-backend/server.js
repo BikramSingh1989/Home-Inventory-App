@@ -15,29 +15,34 @@ app.use(express.json());
 app.use(cors());
 app.use(helmet()); // Security headers
 app.use(morgan("dev")); // Logging requests
+app.use("/api/auth", authRoutes);
+app.use(cors({ origin: "*" })); 
 
 // ✅ Default Route to Prevent 404 on "/"
 app.get("/", (req, res) => {
   res.send("🚀 Home Inventory API is running!");
 });
 
-// ✅ API Routes
-app.use("/items", itemRoutes);
-app.use("/auth", authRoutes);
+// ✅ FIXED API Routes
+app.use("/api/items", itemRoutes);
+app.use("/api/auth", authRoutes); // ✅ FIXED PATH
 
 // ✅ Handle Invalid Routes (404)
 app.use((req, res) => {
   res.status(404).json({ error: "Route Not Found" });
 });
 
-// ✅ MongoDB Connection (Fixed)
+// ✅ FIXED MongoDB Connection (Retries on Failure)
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
     console.log("✅ MongoDB Connected");
   } catch (err) {
     console.error("❌ MongoDB Connection Error:", err);
-    process.exit(1); // Exit process on failure
+    setTimeout(connectDB, 5000); // Retry after 5 seconds
   }
 };
 connectDB();
