@@ -16,6 +16,7 @@
         "web-vitals": "^4.2.4",
         "yocto-queue": "^1.0.0"
     },
+    "main": "src/index.js",
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
